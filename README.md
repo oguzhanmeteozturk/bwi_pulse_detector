@@ -21,10 +21,12 @@ rosrun <ros package name> evm
 To do Motion magnification, make sure to uncomment the following lines in Eulerian_MotionMag.cpp: 
 
   motion_mag mot;
+  
   mot.motionMag();
   
 # Color Mag
 To do Color magnification, make sure to uncomment the following lines in Eulerian_MotionMag.cpp: 
 
   color_mag mag;
+  
   mag.magColor();
