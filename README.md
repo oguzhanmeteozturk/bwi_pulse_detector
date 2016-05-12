@@ -1,4 +1,5 @@
 # bwi_pulse_detector
+Implementation by Kathryn Baldauf and Kiana Alcala
 Code to allow robot to detect the pulse of a human or amplify subtle changes in the movement of a scene. 
 The code is broken into two classes and a main method (Eulerian_MotionMag.cpp).
 The color_mag class amplifies the color of the scene while the motion_mag class amplifies the subtle motions of a video
@@ -32,3 +33,11 @@ To do Color magnification, make sure to uncomment the following lines in Euleria
   color_mag mag;
   
   mag.magColor();
+  
+#Code adapted from the following repositories:
+
+https://github.com/wzpan/QtEVM
+
+https://github.com/kgram007/Eulerian-Motion-Magnification
+
+https://github.com/thearn/webcam-pulse-detector
