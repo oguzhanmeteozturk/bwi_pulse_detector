@@ -1,5 +1,7 @@
 # bwi_pulse_detector
-Code to allow robot to detect the pulse of a human or amplify subtle changes in the movement of a scene
+Code to allow robot to detect the pulse of a human or amplify subtle changes in the movement of a scene. 
+The code is broken into two classes and a main method (Eulerian_MotionMag.cpp).
+The color_mag class amplifies the color of the scene while the motion_mag class amplifies the subtle motions of a video
 
 # To run:
 Download all files into a ros package
