@@ -1,5 +1,5 @@
 # bwi_pulse_detector
-Implementation by Kathryn Baldauf and Kiana Alcala
+Implementation of Eulerian Video Magnification by Kathryn Baldauf and Kiana Alcala
 
 Code to allow robot to detect the pulse of a human or amplify subtle changes in the movement of a scene. 
 The code is broken into two classes and a main method (Eulerian_MotionMag.cpp).
