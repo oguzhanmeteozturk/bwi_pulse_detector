@@ -1,4 +1,6 @@
 # bwi_pulse_detector
+status: in progress
+
 Implementation of Eulerian Video Magnification by Kathryn Baldauf and Kiana Alcala
 
 Code to allow robot to detect the pulse of a human or amplify subtle changes in the movement of a scene. 
