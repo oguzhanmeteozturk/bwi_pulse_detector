@@ -90,11 +90,11 @@ class color_mag{
 
 	void listen_for_data(){
 		ros::Rate loop_rate(40.0);
+		foundData = false;
 		while(!foundData){
 			loop_rate.sleep();
 			ros::spinOnce();
 		}
-		foundData = false;
 	}
 
 
