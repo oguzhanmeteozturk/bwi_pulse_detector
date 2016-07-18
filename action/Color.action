@@ -1,0 +1,13 @@
+#goal definition
+float fl
+float fh
+float alpha
+float chrome
+float exag
+float rate
+---
+#result definition
+bool success
+---
+#feedback
+bool success

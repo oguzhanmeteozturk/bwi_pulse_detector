@@ -65,6 +65,7 @@ find_package(OpenCV REQUIRED)
 #   FILES
 #   Action1.action
 #   Action2.action
+	Color.action
 # )
 
 ## Generate added messages and services with any dependencies listed here
