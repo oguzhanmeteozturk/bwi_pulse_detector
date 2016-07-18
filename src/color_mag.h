@@ -29,8 +29,6 @@ class color_mag{
 	float alpha;
 	float chromAttenuation; 
 	float exaggeration_factor;
-	float delta;
-	float lambda;
 	int levels;
 	float rate;
 
@@ -51,19 +49,23 @@ class color_mag{
 	public: 
 		
 	color_mag() : it_(n){
+		//subscribe to kinect video
 		image_sub_ = it_.subscribe("/nav_kinect/rgb/image_color", 1, &color_mag::pose_cb, this);
+		//advertise results
 		image_pub_ = it_.advertise("/image_converter/output_video", 1);
+		
 		foundData = false;
+		
 		fl = 50/60; //originally 0.05
 		fh = 1; // originally 1 //I think fl corresponds to r2 and fh corresponds to r1
 		alpha = 50; //originally 50
 		chromAttenuation = 0.1; //originally 0.1 
 		exaggeration_factor = 5.0; //originally 2
-		delta = 0;
-		lambda = 0;
 		levels = 6; //originally 5
 		curLevel = 0;
 		rate = 30;
+		
+		//create windows for input and output
 		cvNamedWindow(IN_WINDOW, CV_WINDOW_AUTOSIZE);
 		cvMoveWindow(IN_WINDOW, 20, 100 ); 
 		cvNamedWindow(OUT_WINDOW, CV_WINDOW_AUTOSIZE);
