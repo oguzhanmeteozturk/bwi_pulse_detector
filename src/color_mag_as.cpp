@@ -13,7 +13,7 @@
 #include "cv.h"			// Computer Vision Lib Header
 #include "highgui.h"	// HighGUI Vision Lib Header
 
-#include <bwi_pulse_detector/
+#include <bwi_pulse_detector/ColorAction.h>
 /********************************************************************/
 
 using namespace cv;
