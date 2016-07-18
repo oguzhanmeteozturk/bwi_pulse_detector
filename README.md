@@ -9,9 +9,7 @@ The color_mag class amplifies the color of the scene while the motion_mag class 
 
 # To run:
 Download all files into a ros package
-Place Eulerian_MotionMag.cpp, color_mag.h, motion_mag.h in a file named src
-All other files go at the root of the package
-Make sure to update the CMakeLists.txt with your package name (change project_3 to your package name in this file)
+Make sure to update the CMakeLists.txt and package.xml with your package name if changed from bwi_pulse_detector
 start a roscore if necessary
 
 To use rosbags: 
