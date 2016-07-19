@@ -1,15 +1,15 @@
 #goal definition
-float fl
-float fh
-float alpha
-float chrome
-float exag
-float rate
+float32 fl
+float32 fh
+float32 alpha
+float32 chrome
+float32 exag
+float32 rate
 ---
 #result definition
 bool success
-float pulse
+float32 pulse
 ---
 #feedback
 bool success
-float pulse
+float32 pulse
