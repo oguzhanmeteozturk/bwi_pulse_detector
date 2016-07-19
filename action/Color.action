@@ -8,6 +8,8 @@ float rate
 ---
 #result definition
 bool success
+float pulse
 ---
 #feedback
 bool success
+float pulse
