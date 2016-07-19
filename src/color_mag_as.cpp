@@ -63,7 +63,7 @@ public:
     action_name_(name)
   {
 	//subscribe to kinect video
-	image_sub_ = it_.subscribe("/nav_kinect/rgb/image_color", 1, &&ColorActionServer::pose_cb, this);
+	image_sub_ = it_.subscribe("/nav_kinect/rgb/image_color", 1, &&ColorActionServer::image_cb, this);
 	//advertise results
 	image_pub_ = it_.advertise("/image_converter/output_video", 1);
 	
@@ -94,7 +94,7 @@ public:
   {
   }
   
-  	void pose_cb(const sensor_msgs::ImageConstPtr& msg)
+  	void image_cb(const sensor_msgs::ImageConstPtr& msg)
 	  {
 		//converts ROS video into OpenCV format 
 		try
@@ -120,98 +120,6 @@ public:
 		}
 	}
 	
-	void upsamplingFromGaussianPyramid(const cv::Mat &src, const int levels, cv::Mat &dst){
-		Mat currentImg = src.clone();	
-		cv::Mat up;
-		cv::pyrUp(currentImg, up);
-		currentImg = up;
-		resize(currentImg, currentImg, dst.size());
-		dst+=currentImg;
-	}
-
-	bool buildGaussianPyramid(const cv::Mat &img,const int levels, std::vector<cv::Mat> &pyramid)
-	{
-		if (levels < 1){
-			ROS_INFO_STREAM("levels should be larger than 1");
-			return false;
-		}
-		pyramid.clear();
-		cv::Mat currentImg = img;
-		for (int l=0; l<levels; l++) {
-			cv::Mat down;
-			cv::pyrDown(currentImg, down);        
-			pyramid.push_back(down);
-			currentImg = down;
-		}
-		return true;
-	}
-
-	void amplify(const Mat &src, Mat &dst)
-	{		
-		dst = src * alpha;	
-	}
-	
-	void createIdealBandpassFilter(cv::Mat &filter, double fl, double fh, double rate){
-		int width = filter.cols;
-		int height = filter.rows;
-
-		fl = 2 * fl * width / rate;
-		fh = 2 * fh * width / rate;
-
-		double response;
-
-		for (int i = 0; i < height; ++i) {
-			for (int j = 0; j < width; ++j) {
-				// filter response
-				if (j >= fl && j <= fh)
-					response = 1.0f;
-				else
-					response = 0.0f;
-				filter.at<float>(i, j) = response;
-			}
-		}
-	}
-
-	void temporalIdealFilter(const cv::Mat &src, cv::Mat &dst)
-	{
-		cv::Mat channels[3];
-		// split into 3 channels
-		cv::split(src, channels);
-
-		for (int i = 0; i < 3; ++i){
-
-			cv::Mat current = channels[i];  // current channel
-			cv::Mat tempImg;
-
-			int width = cv::getOptimalDFTSize(current.cols);
-			int height = cv::getOptimalDFTSize(current.rows);
-
-			cv::copyMakeBorder(current, tempImg, 0, height - current.rows, 0, width - current.cols,
-							   cv::BORDER_CONSTANT, cv::Scalar::all(0));
-
-			// do the DFT
-			cv::dft(tempImg, tempImg, cv::DFT_ROWS | cv::DFT_SCALE);
-			// construct the filter
-			cv::Mat filter = tempImg.clone();
-			createIdealBandpassFilter(filter, fl, fh, rate);
-
-			// apply filter
-			cv::mulSpectrums(tempImg, filter, tempImg, cv::DFT_ROWS);
-
-			// do the inverse DFT on filtered image
-			cv::idft(tempImg, tempImg, cv::DFT_ROWS | cv::DFT_SCALE);
-
-			// copy back to the current channel
-			tempImg(cv::Rect(0, 0, current.cols, current.rows)).copyTo(channels[i]);
-		}
-		// merge channels
-		cv::merge(channels, 3, dst);
-
-		// normalize the filtered image
-		cv::normalize(dst, dst, 0, 1, CV_MINMAX);
-	}
-	
-	
 	
 	void executeCB(const bwi_pulse_detector::ColorGoalConstPtr  &goal){
 		
@@ -227,71 +135,21 @@ public:
         //TO DO: set goal values to actual values, record rosbags
         
 		ROS_INFO_STREAM("Magnifying color...");
-		while(ros::ok()){
-			ROS_INFO_STREAM("got to 1");
-			cv::Mat input;
-			cv::Mat output;
-			cv::Mat temp;
-			int f_num = 0;
-
+		while(ros::ok() && !as_.isPreemptRequested()){
+			//get each image in a video sequence
+			
+			//create laplacian or guassian pyramid
+			
+			//pass each level through a temporal ideal filter
+			
+			//multiple each level by the amplitude
+			
+			//add each level to original image's level
+			
+			//reconstruct pyramid
+			
 			while(1){
-				listen_for_data();
 				
-				// 1. spatial filtering
-				input = cv_ptr -> image;
-				if(input.empty()){
-					ROS_INFO_STREAM("error");
-					break;
-				}
-
-				output = input.clone();
-				output.convertTo(output, CV_32FC3);
-				
-				cv::Mat s;
-				s = output.clone();
-				
-				std::vector<cv::Mat> pyramid;
-
-				buildGaussianPyramid(s, levels, pyramid);
-								
-				cv::Mat motion = s.clone();
-				
-				std::vector<cv::Mat> filtered(pyramid);
-				
-				
-				for (int i=0; i<levels; ++i) {
-					curLevel = i;
-					temporalIdealFilter(pyramid.at(i), filtered.at(i));	
-					amplify(filtered.at(i), filtered.at(i));	
-					
-					upsamplingFromGaussianPyramid(filtered.at(i), levels, motion); 
-						
-					//resize(filtered.at(i), filtered.at(i), motion.size());
-					//temp = filtered.at(i) + motion;
-					resize(motion, motion, s.size());
-					temp = s+ motion;					
-
-					
-					resize(temp, temp, output.size());
-					output = temp.clone();
-					
-					cv::Mat colored;
-					colored = s.clone();
-					
-					
-					double minVal, maxVal;
-					minMaxLoc(output, &minVal, &maxVal); //find minimum and maximum intensities
-					
-					output.convertTo(output, CV_8UC3, 255.0/(maxVal), -minVal * 255.0/(maxVal - minVal));
-					
-					cout << f_num++;
-					imshow(IN_WINDOW, input);
-					imshow(OUT_WINDOW, output);
-					char c = waitKey(1);
-					if(c == 27)
-						break;
-				}
-				//pulse /= levels;
 			}
 
 			ros::spin();
